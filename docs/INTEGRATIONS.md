@@ -1,8 +1,8 @@
-# 三条接入链路（0.6）
+# 三条接入链路（0.7）
 
 ## 共用模型
 
-`src/analyzer.ts` 用 TypeScript Compiler API 提取 AST / 符号，`src/reader-model.ts` 将它们投影成树，`media/reader.js` 渲染共用界面。
+`src/project-analyzer.ts` 统一编排多语言快照：TS / JS 使用 `src/analyzer.ts` 的 TypeScript Compiler API；Python、C / C++、Java、Rust、Go 使用 `src/syntax-analyzer.ts` 的共享 Tree-sitter 提取器。`src/languages.ts` 维护扩展名、宿主语言 ID 和语法节点配置；`src/reader-model.ts` 投影双树，`media/reader.js` 渲染共用界面。详见 [语言支持与精度边界](LANGUAGES.md)。
 
 0.5 共用界面加入明暗主题、统一图标、参数证据卡片和快速导航。`Ctrl / Cmd + K` / `P` 搜索文件和符号，`Ctrl / Cmd + G` 跳行；工作台在宽窗口可拖动导航分栏。新交互通过真实本机服务的浏览器测试；DSH 已移除地址输入页；后台自动启动并连接阅读服务，允许按会话记住自选项目。
 
@@ -15,7 +15,7 @@
 VS Code 的 CodeMirror 动态样式使用 webview nonce，保留严格 CSP。编辑器只读，不提供保存 / 重构。宿主没有扩大窗口能力时，仍可在现有面板使用完整文件布局；需要更宽的区域才能同时放下树、源码、解释三列。
 
 - 项目树：目录 → 文件 → 函数 → 内部函数。嵌套采用 AST 父节点身份，不按同名或行号猜测。
-- 逻辑入口树：模块初始化、回调注册候选、导出 API、无直接调用方候选。每类最多 40 个入口，入口调用投影最多 3 层 / 60 节点，合计最多 1600 节点；截断明确标记。入口名称 / 原因可筛选；切换源码不会重设入口路径。模块顶层调用、导出是源码事实；回调用途、无调用方的入口含义是候选，附注册 / 声明的行号证据。当前只支持 TS / JS，不因入口模型通用而声称支持 C。
+- 逻辑入口树：模块初始化、回调注册候选、导出 API、无直接调用方候选。每类最多 40 个入口，入口调用投影最多 3 层 / 60 节点，合计最多 1600 节点；截断明确标记。入口名称 / 原因可筛选；切换源码不会重设入口路径。其他语言按 main 声明、Python __main__ 守卫和无调用方候选提供阅读起点；main 声明不代表构建系统一定启动它。
 - 调用 / 依赖树：从选定节点展开。共同依赖标“共享引用”，递归标“递归”；默认最多 4 层、120 节点。树不是运行时执行顺序。
 - 每份工作区快照带源码哈希。过期选择 / 解释会被拒绝；源码变化清除旧解释。
 - 三种宿主共用模型与解析器；各进程目前独立索引，尚未跨宿主自动同步同一选区。
@@ -65,7 +65,7 @@ args = ["D:/projects/scanf/dist/mcp.js", "--root", "D:/projects/scanf/examples"]
 
 ## VS Code 深入阅读
 
-从 VSIX 安装 `scanf-code-reader-0.6.0.vsix`，打开 TS / JS 项目，执行 `Scanf: 打开代码阅读地图`。切换文件结构 / 逻辑入口，阅读源码 / 步骤，点击“在编辑器打开”或步骤定位。当前符号调用 / 导入依赖仍可在详情中展开。光标移动会更新阅读位置；“固定”停止跟随选区。编辑刷新仍更新版本。
+从 VSIX 安装 `scanf-code-reader-0.7.0.vsix`，打开多语言项目，执行 `Scanf: 打开代码阅读地图`。切换文件结构 / 逻辑入口，阅读源码 / 步骤，点击“在编辑器打开”或步骤定位。当前符号调用 / 导入依赖仍可在详情中展开。光标移动会更新阅读位置；“固定”停止跟随选区。编辑刷新仍更新版本。
 
 VS Code 尚未接入 Agent 专有聊天 API，追问先生成可复制草稿。它会索引未保存文档；MCP / DSH 本机服务目前只读磁盘，不能把两者视为同一版本。
 
@@ -84,7 +84,7 @@ VS Code 尚未接入 Agent 专有聊天 API，追问先生成可复制草稿。�
 ## 参考
 
 - [AST Explorer](https://github.com/fkling/astexplorer)：借鉴源码和树节点互相定位，不复制源码。
-- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)：增量解析库，生成具体语法树；未来扩语言时再评估。首版仍用 TypeScript 语义分析。
+- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)：多语言具体语法树，0.7 起用于共享语法提取；TS / JS 仍保留 TypeScript 语义分析。
 - [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview)、[OpenAI 扩展规范](https://github.com/openai/mcp-extensions/blob/main/docs/spec.md#thread-entrypoint)、[DSH 原生侧栏](https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/sidebar-right)。
 
 ## 自选模型验收（0.6）

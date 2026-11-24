@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
-import {mkdtemp,copyFile,rm} from 'node:fs/promises';
+import {mkdtemp,copyFile,rm,cp} from 'node:fs/promises';
 import os from 'node:os';
 
 test('built MCP server negotiates stdio, exposes reading entrypoint, disambiguates and returns UI resources',async()=>{
  const client=new Client({name:'scanf-integration-test',version:'1'});
  const isolated=await mkdtemp(path.join(os.tmpdir(),'scanf-packaged-'));
  await copyFile('dist/mcp.js',path.join(isolated,'mcp.js'));await copyFile('dist/reader.html',path.join(isolated,'reader.html'));
+ await cp('dist/parsers',path.join(isolated,'parsers'),{recursive:true});
  const transport=new StdioClientTransport({command:process.execPath,args:[path.join(isolated,'mcp.js'),'--root',path.resolve('examples')],cwd:isolated,stderr:'pipe'});
  try{
   await client.connect(transport);
@@ -24,6 +25,17 @@ test('built MCP server negotiates stdio, exposes reading entrypoint, disambiguat
   assert.ok(view.entries.children.some((g:any)=>g.label==='导出 API'));
   assert.deepEqual(view.calls.children.map((n:any)=>n.label),['subtotal','discount','saveOrder']);
   assert.match(view.source,/购物车为空/);
+  const pyResult = await client.callTool({name:'scanf_find_symbol',arguments:{query:'run_worker'}});
+  const pyLookup = pyResult.structuredContent as any;
+  assert.ok(!pyResult.isError);
+  const pySymbol = pyLookup.matches.find((m:any)=>m.name==='run_worker');
+  assert.ok(pySymbol, 'isolated packaged server must load its Python grammar without node_modules');
+  const pyDetail = await client.callTool({name:'scanf_inspect',arguments:{id:pySymbol.id,revision:pyLookup.revision}});
+  const pyView = (pyDetail.structuredContent as any).view;
+  assert.ok(pyView.languages.includes('python'));
+  assert.ok(pyView.languages.includes('typescript'));
+  assert.match(pyView.file.text,/if __name__/);
+  assert.deepEqual(pyView.calls.children.map((n:any)=>n.label),['normalize_count']);
   const note=await client.callTool({name:'scanf_publish_explanation',arguments:{id:symbol.id,revision:lookup.revision,text:'检查购物车，计算价格后保存订单。',evidence:[{line:5,endLine:11}],parameters:[{name:'items',text:'本次结算的购物车条目，传入小计计算并随订单保存。',evidence:[{line:5,endLine:11}]}]}});
   assert.equal((note.structuredContent as any).view.explanation.text,'检查购物车，计算价格后保存订单。');
   assert.match((note.structuredContent as any).view.explanation.parameters[0].text,/购物车条目/);

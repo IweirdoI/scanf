@@ -40,7 +40,7 @@ const explanationSchema = {
  * @param html 已打包的自包含阅读界面 HTML，通过 MCP Apps 资源交给宿主显示。
  */
 export function createReaderServer(project: ProjectReader, html: string) {
-  const server = new McpServer({ name: "scanf-reader", version: "0.6.1" });
+  const server = new McpServer({ name: "scanf-reader", version: "0.7.0" });
   const ensure = async () => project.refresh();
   const result = (view: ReaderView) => ({
     content: [
@@ -80,7 +80,7 @@ export function createReaderServer(project: ProjectReader, html: string) {
     "scanf_project",
     {
       description:
-        "Read the bounded TypeScript/JavaScript project structure and a source-backed reading tree. Call before navigating unfamiliar modules. Refreshes the working-tree snapshot; this is not a Git diff or a runtime trace.",
+        "Read a bounded, mixed-language project (TypeScript, JavaScript, Python, C/C++, Java, Rust, Go) and source-backed reading trees. Calls are static; unresolved dynamic or cross-language targets are reported rather than guessed. Refreshes the working-tree snapshot; this is not a Git diff or runtime trace.",
       inputSchema: {},
       annotations,
     },
@@ -157,7 +157,7 @@ export function createReaderServer(project: ProjectReader, html: string) {
     {
       title: "Scanf 代码阅读",
       description:
-        "Open the interactive source reading panel for a TS/JS project or selected symbol. Use when the user wants to see project structure, expand call trees or read code alongside this conversation. Works as plain tool output when UI is unavailable.",
+        "Open the interactive source reading panel for a mixed-language project or selected symbol. Use when the user wants project structure, entry / call trees, full source or parameter evidence alongside this conversation. Works as plain tool output when UI is unavailable.",
       inputSchema: { id: z.string().max(4096).optional() },
       annotations,
       _meta: {

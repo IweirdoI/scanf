@@ -5,8 +5,9 @@ import { Worker } from "node:worker_threads";
 import type { CodeMap } from "./model";
 import { readerView } from "./reader-model";
 import { ModelService } from "./model-service";
+import { languageFor, sourceGlob, editorLanguageIds } from "./languages";
 
-const supported = /\.[cm]?[jt]sx?$/i;
+const supported = { test: (file: string) => !!languageFor(file) };
 const normalize = (p: string) => path.resolve(p).replace(/\\/g, "/");
 export function activate(context: vscode.ExtensionContext) {
   const model = new ModelService({
@@ -91,11 +92,11 @@ export function activate(context: vscode.ExtensionContext) {
         ),
       );
       const exclude =
-        "**/{node_modules,.git,dist,build,coverage,.next,out,vendor}/**";
+        "**/{node_modules,.git,dist,build,coverage,.next,out,output,vendor,.venv,venv,__pycache__,.mypy_cache,.pytest_cache,target,.idea}/**";
       const candidates = await vscode.workspace.findFiles(
         new vscode.RelativePattern(
           root,
-          "**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+          sourceGlob,
         ),
         exclude,
         limit + 1,
@@ -331,7 +332,7 @@ export function activate(context: vscode.ExtensionContext) {
   };
   context.subscriptions.push(
     vscode.languages.registerHoverProvider(
-      ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+      editorLanguageIds,
       {
         async provideHover(document, position, token) {
           if (!map) return;

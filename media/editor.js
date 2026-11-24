@@ -8,6 +8,12 @@ import {
   lineNumbers,
 } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+import { cpp } from "@codemirror/lang-cpp";
+import { java } from "@codemirror/lang-java";
+import { rust } from "@codemirror/lang-rust";
+import { go } from "@codemirror/lang-go";
+import { languageFor } from "../src/languages";
 import { openSearchPanel } from "@codemirror/search";
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
@@ -25,6 +31,16 @@ const readableSyntax = HighlightStyle.define([
   { tag: tags.comment, color: "var(--syntax-comment)" },
   { tag: [tags.operator, tags.punctuation], color: "var(--fg)" },
 ]);
+function editorLanguage(file) {
+  const id = languageFor(file)?.id;
+  if (id === "python") return python();
+  if (id === "c" || id === "cpp") return cpp();
+  if (id === "java") return java();
+  if (id === "rust") return rust();
+  if (id === "go") return go();
+  if (id === "javascript" || id === "typescript") return javascript({ typescript: id === "typescript", jsx: /\.[jt]sx$/i.test(file) });
+  return [];
+}
 
 /** A real read-only editor. All navigation targets come from the analyzed snapshot. */
 export function createReaderEditor(
@@ -360,10 +376,7 @@ export function createReaderEditor(
       editor.dispatch({
         effects: [
           language.reconfigure(
-            javascript({
-              typescript: /\.[cm]?tsx?$/.test(file.path),
-              jsx: /\.[jt]sx$/.test(file.path),
-            }),
+            editorLanguage(file.path),
           ),
           numbers.reconfigure(
             lineNumbers({ formatNumber: (n) => String(n + first - 1) }),

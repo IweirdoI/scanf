@@ -2,7 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import ts from "typescript";
-import { analyze, normalize } from "./analyzer";
+import { normalize } from "./analyzer";
+import { analyzeProject } from "./project-analyzer";
+import { languageFor } from "./languages";
 import { readerView } from "./reader-model";
 import type { CodeMap } from "./model";
 
@@ -45,6 +47,7 @@ export class ProjectReader {
       "out",
       "output",
       "vendor",
+      ".venv", "venv", "__pycache__", ".mypy_cache", ".pytest_cache", "target", ".idea",
     ]);
     let bytes = 0,
       capped = false;
@@ -63,7 +66,7 @@ export class ProjectReader {
           await walk(file);
           continue;
         }
-        if (!entry.isFile() || !/\.[cm]?[jt]sx?$/i.test(entry.name)) continue;
+        if (!entry.isFile() || !languageFor(entry.name)) continue;
         try {
           const real = await fs.realpath(file),
             relative = path.relative(actualRoot, real);
@@ -109,7 +112,7 @@ export class ProjectReader {
     hash.update(JSON.stringify(options));
     const revision = hash.digest("hex").slice(0, 20);
     if (revision !== this.revision) {
-      const map = analyze(files, this.root, options);
+      const map = await analyzeProject(files, this.root, options);
       map.warnings.unshift(...warnings);
       this.map = map;
       this.sources = files;

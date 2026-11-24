@@ -1,4 +1,4 @@
-import {mkdir,copyFile,writeFile,readFile} from 'node:fs/promises';
+import {mkdir,copyFile,writeFile,readFile,cp} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -6,6 +6,7 @@ const pkg=JSON.parse(await readFile('package.json','utf8'));
 const output=path.resolve('output/release'),mcp=path.resolve('output/release-mcp');
 await mkdir(output,{recursive:true});await mkdir(path.join(mcp,'dist'),{recursive:true});
 for(const name of ['mcp.js','reader.html'])await copyFile(`dist/${name}`,path.join(mcp,'dist',name));
+await cp('dist/parsers',path.join(mcp,'dist/parsers'),{recursive:true});
 for(const name of ['LICENSE','THIRD_PARTY_NOTICES.txt'])await copyFile(name,path.join(mcp,name));
 await copyFile('scripts/reader-cli.cjs',path.join(mcp,'cli.cjs'));
 const portable={name:'scanf-reader',version:pkg.version,description:pkg.description,license:'MIT',engines:{node:'>=22'},bin:{'scanf-reader':'cli.cjs'},files:['cli.cjs','dist','LICENSE','THIRD_PARTY_NOTICES.txt','README.md'],repository:pkg.repository,homepage:pkg.homepage};

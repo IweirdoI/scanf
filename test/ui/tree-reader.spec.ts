@@ -34,6 +34,31 @@ test.beforeAll(async () => {
 test.afterAll(() => {
   server?.kill();
 });
+test("mixed-language workspace opens full Python source, parameters and call navigation alongside TypeScript", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto(url);
+  await expect(page.locator("#status")).toContainText("python");
+  // Search reveals the nested directory and file path without manually expanding every level.
+  await page.locator("#tree-filter").fill("run_worker");
+  await page.locator("#tree .tree-symbol").filter({ hasText: "run_worker" }).last().click();
+  await expect(page.locator("#name")).toHaveText("run_worker");
+  if (await page.locator("#app").getAttribute("data-mode") !== "workspace") await page.locator("#mode").click();
+  await expect(page.locator("#source")).toContainText('if __name__ == "__main__"');
+  await expect(page.locator("#parameters")).toContainText("count");
+  await page.locator("#source .cm-symbol-link").filter({ hasText: "normalize_count" }).last().click({ modifiers: ["Control"] });
+  await expect(page.locator("#name")).toHaveText("normalize_count");
+  await expect(page.locator("#parameters")).toContainText("Number of tasks requested");
+  await page.locator('#parameters [data-parameter="count"]').click();
+  await expect(page.locator("#source .cm-parameter-focus").first()).toBeVisible();
+  await page.locator("#tree-filter").fill("checkout");
+  await page.locator("#tree .tree-symbol").filter({ hasText: "checkout" }).last().click();
+  await expect(page.locator("#name")).toHaveText("checkout");
+  await expect(page.locator("#file-tabs")).toContainText("worker.py");
+  await expect(page.locator("#file-tabs")).toContainText("checkout.ts");
+  await page.screenshot({ path: "output/polyglot-workspace.png" });
+  expect(errors).toEqual([]);
+});
 test("file tabs close inactive and active files, show an empty editor and reopen from navigation", async ({
   page,
 }) => {

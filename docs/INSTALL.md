@@ -8,7 +8,7 @@
 
 ## DSH
 
-已验证 DSH Desktop 0.2.2-rc.5。下载 `dsh-scanf-reader-0.6.1.tgz`，在插件页选择本地包安装，或运行 `dsh plugin --profile desktop add ./dsh-scanf-reader-0.6.1.tgz`。重启后右侧栏新标签页选择 Scanf。
+已验证 DSH Desktop 0.2.2-rc.5。下载 `dsh-scanf-reader-0.7.0.tgz`，在插件页选择本地包安装，或运行 `dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.0.tgz`。重启后右侧栏新标签页选择 Scanf。
 
 如果插件安装成功但没有入口：检查 desktop profile 的 `package.json` 中 `dsh.profile.bundles` 是否包含 `dsh-scanf-reader`；只追加此项，保留原有 bundles。然后重启。使用 CLI 的 `dsh plugin --help` 查看所安装版本的命令。新版本接口可能有差异，请在 Issue 中提供版本号和错误。
 
@@ -19,7 +19,7 @@
 Node.js 22+，一次安装：
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.6.1/scanf-reader-0.6.1.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.0/scanf-reader-0.7.0.tgz
 scanf-reader --version
 scanf-reader setup --root "/absolute/project/path"
 ```
@@ -32,7 +32,7 @@ Windows 路径示例：`scanf-reader setup --root "D:/projects/my-app"`。该命
 codex mcp add scanf -- scanf-reader mcp --root "/absolute/project/path"
 ```
 
-无全局安装体验：`npx -y --package=https://github.com/IweirdoI/scanf/releases/download/v0.6.1/scanf-reader-0.6.1.tgz scanf-reader --help`。
+无全局安装体验：`npx -y --package=https://github.com/IweirdoI/scanf/releases/download/v0.7.0/scanf-reader-0.7.0.tgz scanf-reader --help`。
 
 `scanf-reader mcp` 的 stdout 专用于 MCP，不要把普通终端输出写入该通道。项目根目录必须显式传入。MCP 工具为 `scanf_project`、`scanf_find_symbol`、`scanf_inspect`、`scanf_publish_explanation`、`scanf_open_reader`。
 
@@ -52,7 +52,7 @@ Release 提供 `SHA256SUMS.txt`。Windows 使用 `Get-FileHash <文件> -Algorit
 
 ## 排错
 
-- 没有源码：确认目录包含 TS / JS，且不在依赖或构建目录；检查面板的扫描警告。
+- 没有源码：确认目录包含 TS / JS、Python、C / C++、Java、Rust 或 Go，且不在依赖或构建目录；检查面板的扫描警告。语言自动按扩展名识别，同一目录可混合多种语言。
 - 无法解析调用：可能是外部依赖、动态派发或缺少类型信息，工具会保留未解析关系。
 - 401 / 403：检查自己的 API Key、额度与服务商权限。
 - 地址 / 模型不匹配：基础 URL 与模型 ID 以服务商文档为准，不是网页聊天地址。

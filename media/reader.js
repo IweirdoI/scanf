@@ -375,7 +375,7 @@ function render() {
     file = allFilesClosed ? undefined : view.file;
   root.dataset.mode = mode;
   $("status").textContent =
-    `${view.root.split("/").pop()} · 工作区源码 · ${view.revision.slice(0, 8)}${pinned ? " · 已固定" : ""}`;
+    `${view.root.split("/").pop()} · 工作区源码${view.languages?.length ? ` · ${view.languages.join(" / ")}` : ""} · ${view.revision.slice(0, 8)}${pinned ? " · 已固定" : ""}`;
   $("warnings").textContent = view.warnings.join(" ");
   const tree = treeMode === "project" ? view.project : view.entries;
   const treeSelection = `${view.root}:${treeMode}:${n?.id}`;
@@ -393,7 +393,7 @@ function render() {
       .forEach((el) => (el.open = true));
   if (treeMode === "project" && !view.project.children.length)
     $("tree").innerHTML =
-      '<p class="empty">当前项目没有找到 TS / JS 源文件。请在宿主中切换到要阅读的项目文件夹。</p>';
+      '<p class="empty">当前项目没有找到支持的源文件。可阅读 TS、JS、Python、C/C++、Java、Rust、Go；请检查项目目录与扫描警告。</p>';
   bindTree($("tree"));
   if (revealTree)
     $("tree").querySelector(".selected")?.scrollIntoView({ block: "nearest" });
@@ -407,7 +407,7 @@ function render() {
     ? `${n.file.startsWith(view.root + "/") ? n.file.slice(view.root.length + 1) : n.file}  ›  ${n.name}  ·  L${n.line}–${n.endLine}`
     : "";
   $("name").textContent =
-    n?.name ?? (allFilesClosed ? "选择文件开始阅读" : "没有 TS / JS 源码");
+    n?.name ?? (allFilesClosed ? "选择文件开始阅读" : "没有可阅读源码");
   $("symbol-kind").textContent =
     n?.kind === "module" ? "SOURCE FILE" : "FUNCTION";
   $("parameter-count").textContent = String(n?.parameterDetails?.length ?? 0);
@@ -893,7 +893,7 @@ async function start() {
     receive(await bridge.refresh());
     void models.refresh();
   } else {
-    const app = new App({ name: "Scanf Reader", version: "0.6.1" }, {});
+    const app = new App({ name: "Scanf Reader", version: "0.7.0" }, {});
     app.ontoolresult = (result) => {
       if (result.structuredContent?.view)
         receive(result.structuredContent.view, true);

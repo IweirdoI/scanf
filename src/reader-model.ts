@@ -14,6 +14,7 @@ export interface ReadingTree {
   evidence?: { file: string; line: number };
 }
 export interface ReaderView {
+  languages?: CodeMap["languages"];
   revision: string;
   generatedAt: string;
   root: string;
@@ -257,6 +258,7 @@ export function readerView(
   const text = selected ? (sources[selected.file] ?? "") : "";
   const byId = new Map(map.nodes.map((n) => [n.id, n]));
   return {
+    languages: map.languages,
     revision,
     generatedAt: map.generatedAt,
     root: map.root,

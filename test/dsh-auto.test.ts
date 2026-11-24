@@ -57,6 +57,8 @@ test("DSH host starts a scoped reader automatically, reuses it and closes it on 
     });
     const data = await response.json();
     assert.equal(data.view.root, root.replace(/\\/g, "/"));
+    assert.ok(data.view.languages.includes("python"), "DSH bundled host must load parser assets");
+    assert.ok(data.view.languages.includes("go"));
     assert.equal((await connect("missing")).ok, false);
     assert.equal((await connect("session-a", "relative/path")).ok, false);
     const switched = await connect("session-a", path.resolve("src"));

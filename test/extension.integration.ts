@@ -58,6 +58,20 @@ export async function run() {
       line: snapshot.selected.line,
     });
     assert.match(answer.text, /本机模拟接口/);
+    assert.ok(snapshot.languages.includes("python"));
+    const pythonDoc = await vscode.workspace.openTextDocument(vscode.Uri.joinPath(folder.uri, "polyglot", "worker.py"));
+    await vscode.window.showTextDocument(pythonDoc);
+    await vscode.commands.executeCommand("scanf.open");
+    const deadline = Date.now() + 10000;
+    let pythonSnapshot;
+    do {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      pythonSnapshot = extension.exports.getReadingSnapshot();
+    } while (!pythonSnapshot?.file?.path.endsWith("worker.py") && Date.now() < deadline);
+    assert.match(pythonSnapshot?.file?.text ?? "", /if __name__/);
+    const pythonHovers = await vscode.commands.executeCommand<vscode.Hover[]>("vscode.executeHoverProvider", pythonDoc.uri, new vscode.Position(4, 24));
+    const pythonHoverText = (pythonHovers ?? []).flatMap(hover => hover.contents.map(content => typeof content === "string" ? content : "value" in content ? content.value : "")).join("\n");
+    assert.match(pythonHoverText, /本机模拟接口/, "Python native hover must use the shared model service");
     fs.writeFileSync(
       path.resolve(__dirname, "../output/extension-host-result.json"),
       JSON.stringify(
@@ -67,6 +81,8 @@ export async function run() {
           nativeHover: true,
           modelSettings: true,
           fullExplanation: true,
+          mixedLanguageWorker: true,
+          pythonNativeHover: true,
           mockCalls: backend.calls.length,
           editor: doc.fileName,
         },

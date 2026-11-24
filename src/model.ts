@@ -38,6 +38,7 @@ export interface CodeReference {
   documentation?: string;
 }
 export interface CodeNode extends Location {
+  language?: import("./languages").LanguageId;
   id: string;
   name: string;
   kind: "module" | "function";
@@ -70,6 +71,7 @@ export interface EntryPoint extends Location {
   candidate: boolean;
 }
 export interface CodeMap {
+  languages?: import("./languages").LanguageId[];
   nodes: CodeNode[];
   edges: Edge[];
   unresolved: Unresolved[];
