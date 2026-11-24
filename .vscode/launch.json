@@ -1,0 +1,1 @@
+{"version":"0.2.0","configurations":[{"name":"运行 Scanf 插件","type":"extensionHost","request":"launch","runtimeExecutable":"${execPath}","args":["--extensionDevelopmentPath=${workspaceFolder}","${workspaceFolder}/examples"],"outFiles":["${workspaceFolder}/dist/**/*.js"],"preLaunchTask":"npm: build"}]}

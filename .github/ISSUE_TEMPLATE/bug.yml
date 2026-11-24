@@ -1,0 +1,28 @@
+name: Bug report / 问题反馈
+description: 安装、导航、模型配置或宿主接入出错
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Scanf 版本
+      placeholder: 0.6.1
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境
+      description: 操作系统、宿主及版本、安装方式、Node 版本（如使用 MCP）
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤与预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 截图或错误日志
+      description: 请删除 API Key、连接令牌、私人源码与个人路径。

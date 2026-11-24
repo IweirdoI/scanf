@@ -1,0 +1,11 @@
+{
+  "name": "scanf-reader",
+  "version": "0.6.1",
+  "description": "树与完整源码对照阅读，支持参数解释、查找和定义跳转。",
+  "requires_local_executor": true,
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Scanf 代码阅读",
+    "shortDescription": "小窗口预览，大工作台对照逻辑与完整源码"
+  }
+}

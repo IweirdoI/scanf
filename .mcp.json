@@ -1,0 +1,1 @@
+{"mcpServers":{"scanf":{"command":"node","args":["${PLUGIN_ROOT}/dist/mcp.js"],"env":{"SCANF_PROJECT_ROOT":"${SCANF_PROJECT_ROOT}"}}}}

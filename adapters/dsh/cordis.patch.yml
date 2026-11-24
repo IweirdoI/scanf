@@ -1,0 +1,3 @@
+- insert:
+    - id: scanf-reader
+      name: dsh-scanf-reader

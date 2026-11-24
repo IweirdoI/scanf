@@ -1,0 +1,97 @@
+{
+  "name": "scanf-code-reader",
+  "displayName": "Scanf · 代码阅读地图",
+  "description": "用模块依赖、函数调用和源码导览辅助理解 TypeScript / JavaScript。",
+  "version": "0.6.1",
+  "publisher": "scanf-local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Visualization",
+    "Education"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onCommand:scanf.open"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "scanf.open",
+        "title": "Scanf: 打开代码阅读地图"
+      },
+      {
+        "command": "scanf.refresh",
+        "title": "Scanf: 刷新代码地图"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "scanf.open",
+          "when": "editorLangId =~ /^(typescript|typescriptreact|javascript|javascriptreact)$/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Scanf",
+      "properties": {
+        "scanf.maxFiles": {
+          "type": "number",
+          "scope": "resource",
+          "default": 150,
+          "minimum": 1,
+          "maximum": 500,
+          "description": "每个工作区文件夹最多分析的源码文件数。大项目建议单独打开功能模块目录。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "test:ui": "playwright test",
+    "mcp": "node dist/mcp.js",
+    "preview": "node dist/mcp.js --preview",
+    "package:agent": "npm run build && node scripts/package-plugin.mjs",
+    "package": "vsce package --allow-missing-repository --no-rewrite-relative-links",
+    "vscode:prepublish": "npm run build",
+    "release:packages": "node scripts/release-packages.mjs"
+  },
+  "devDependencies": {
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@dagrejs/dagre": "^1.1.5",
+    "@lezer/highlight": "^1.2.5",
+    "@modelcontextprotocol/ext-apps": "^2.0.4",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.3.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.0.0",
+    "codemirror": "^6.0.2",
+    "esbuild": "^0.25.0",
+    "lucide": "^1.78.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tsx": "^4.19.0",
+    "typescript": "~5.9.3",
+    "zod": "^4.6.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IweirdoI/scanf.git"
+  },
+  "homepage": "https://github.com/IweirdoI/scanf",
+  "bugs": {
+    "url": "https://github.com/IweirdoI/scanf/issues"
+  }
+}

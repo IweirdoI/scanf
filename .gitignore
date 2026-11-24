@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.vsix
+output/
+test-results/
+playwright-report/
+adapters/dsh/lib/
+*.tgz
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+*.log
+adapters/dsh/node_modules/

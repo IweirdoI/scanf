@@ -1,0 +1,10 @@
+{
+  "name": "scanf-local",
+  "interface": { "displayName": "Scanf 本地开发" },
+  "plugins": [{
+    "name": "scanf-reader",
+    "source": { "source": "local", "path": "./output/scanf-agent-plugin" },
+    "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+    "category": "Productivity"
+  }]
+}
