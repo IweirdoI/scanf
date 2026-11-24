@@ -11,7 +11,7 @@ Explore mixed TypeScript / JavaScript, Python, C / C++, Java, Rust and Go projec
 - **MCP agents:** Node.js 22+; prebuilt package, no compilation:
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.0/scanf-reader-0.7.0.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.1/scanf-reader-0.7.1.tgz
 scanf-reader setup --root "/absolute/path/to/project"
 ```
 

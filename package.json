@@ -2,7 +2,7 @@
   "name": "scanf-code-reader",
   "displayName": "Scanf · 代码阅读地图",
   "description": "用双树、完整源码和参数证据阅读 TS/JS、Python、C/C++、Java、Rust、Go 混合项目。",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "publisher": "scanf-local",
   "license": "MIT",
   "engines": {

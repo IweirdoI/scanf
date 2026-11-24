@@ -893,7 +893,7 @@ async function start() {
     receive(await bridge.refresh());
     void models.refresh();
   } else {
-    const app = new App({ name: "Scanf Reader", version: "0.7.0" }, {});
+    const app = new App({ name: "Scanf Reader", version: "0.7.1" }, {});
     app.ontoolresult = (result) => {
       if (result.structuredContent?.view)
         receive(result.structuredContent.view, true);

@@ -21,24 +21,24 @@
 
 ### VS Code / Cursor
 
-1. [下载最新 VSIX](https://github.com/IweirdoI/scanf/releases/latest/download/scanf-code-reader-0.7.0.vsix)。
+1. [下载最新 VSIX](https://github.com/IweirdoI/scanf/releases/latest/download/scanf-code-reader-0.7.1.vsix)。
 2. 编辑器扩展页 → `…` → **Install from VSIX / 从 VSIX 安装**，选择下载文件。
 3. 打开项目（可以包含多种语言），命令面板运行 **Scanf: 打开代码阅读地图**。
 
 也可以在下载目录执行：
 
 ```sh
-code --install-extension scanf-code-reader-0.7.0.vsix
+code --install-extension scanf-code-reader-0.7.1.vsix
 ```
 
 扩展已打包依赖，无需单独安装 Node.js。当前通过 GitHub Releases 分发，**尚未上架 VS Code Marketplace / Open VSX**。
 
 ### DeepSeek Harness
 
-在 DSH 插件页选择本地安装，选取 [DSH 插件包](https://github.com/IweirdoI/scanf/releases/latest/download/dsh-scanf-reader-0.7.0.tgz)。或下载后执行：
+在 DSH 插件页选择本地安装，选取 [DSH 插件包](https://github.com/IweirdoI/scanf/releases/latest/download/dsh-scanf-reader-0.7.1.tgz)。或下载后执行：
 
 ```sh
-dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.0.tgz
+dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.1.tgz
 ```
 
 重新启动 DSH，在项目会话右侧栏的新标签页中选择 **Scanf 代码阅读**。它自动读取当前会话目录；需要换目录时点“切换项目”。已实测 DSH Desktop **0.2.2-rc.5**，其他版本尚待验证。详见 [安装排错](docs/INSTALL.md#dsh)。
@@ -48,7 +48,7 @@ dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.0.tgz
 需要 **Node.js 22+**，不需要下载源码或运行 build：
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.0/scanf-reader-0.7.0.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.1/scanf-reader-0.7.1.tgz
 scanf-reader setup --root "/absolute/path/to/your-project"
 ```
 

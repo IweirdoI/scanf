@@ -40,7 +40,7 @@ const explanationSchema = {
  * @param html 已打包的自包含阅读界面 HTML，通过 MCP Apps 资源交给宿主显示。
  */
 export function createReaderServer(project: ProjectReader, html: string) {
-  const server = new McpServer({ name: "scanf-reader", version: "0.7.0" });
+  const server = new McpServer({ name: "scanf-reader", version: "0.7.1" });
   const ensure = async () => project.refresh();
   const result = (view: ReaderView) => ({
     content: [

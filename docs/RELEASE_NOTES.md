@@ -1,4 +1,6 @@
-Scanf 0.7.0：一份项目快照阅读 TS / JS、Python、C / C++、Java、Rust、Go 混合项目。
+Scanf 0.7.1：一份项目快照阅读 TS / JS、Python、C / C++、Java、Rust、Go 混合项目。
+
+0.7.1 修复 Rust 多 crate 的导入范围，以及 Python 多级模块导入 / 歧义处理；建议安装此补丁版本。
 
 - 多语言共享文件树、逻辑入口树、完整源码编辑器、搜索与定义跳转。
 - 新语言共享 Tree-sitter 提取器与按需加载的离线 WASM；保留 TS / JS 编译器语义解析，无需各语言工具链。
@@ -8,9 +10,9 @@ Scanf 0.7.0：一份项目快照阅读 TS / JS、Python、C / C++、Java、Rust�
 
 安装包（无需编译）：
 
-- VS Code / Cursor：下载 `scanf-code-reader-0.7.0.vsix`，通过 Install from VSIX 安装。
-- DSH Desktop 0.2.2-rc.5：下载 `dsh-scanf-reader-0.7.0.tgz`，使用本地插件安装，重启后打开右侧 Scanf 标签。
-- MCP（Node.js 22+）：`npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.0/scanf-reader-0.7.0.tgz`，然后 `scanf-reader setup --root "/your/project"`。
+- VS Code / Cursor：下载 `scanf-code-reader-0.7.1.vsix`，通过 Install from VSIX 安装。
+- DSH Desktop 0.2.2-rc.5：下载 `dsh-scanf-reader-0.7.1.tgz`，使用本地插件安装，重启后打开右侧 Scanf 标签。
+- MCP（Node.js 22+）：`npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.1/scanf-reader-0.7.1.tgz`，然后 `scanf-reader setup --root "/your/project"`。
 
 安装与排错：https://github.com/IweirdoI/scanf/blob/master/docs/INSTALL.md
 
