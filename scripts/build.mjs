@@ -30,7 +30,7 @@ const licenses=await Promise.all([...packages].sort().map(async name=>{
  const texts=await Promise.all(files.map(file=>readFile(`${dir}/${file}`,'utf8')));
  return `${name}@${pkg.version}\n${'='.repeat(name.length)}\nLicense: ${pkg.license??'see package source'}\n${texts.join('\n')||JSON.stringify({author:pkg.author,repository:pkg.repository})}`;
 }));
-await writeFile('THIRD_PARTY_NOTICES.txt', licenses.join('\n\n')+'\n\n'+await readFile('docs/THIRD_PARTY_PARSERS.txt','utf8'));
+await writeFile('THIRD_PARTY_NOTICES.txt', (licenses.join('\n\n')+'\n\n'+await readFile('docs/THIRD_PARTY_PARSERS.txt','utf8')).trimEnd()+'\n');
 
 await writeFile('adapters/dsh/lib/reader.html', await readFile('dist/reader.html','utf8'));
 
