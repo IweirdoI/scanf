@@ -500,20 +500,24 @@ export async function analyzeSyntax(
             const bases = dots
               ? [resolveLocal(dir, "../".repeat(Math.max(0, dots - 1)), suffix)]
               : [resolveLocal(dir, suffix), resolveLocal(root, suffix)];
-            return bases
-              .flatMap((base) => [
-                base + ".py",
-                base + ".pyi",
-                base + "/__init__.py",
-              ])
-              .find((file) => files.has(file));
+            const matches = [
+              ...new Set(
+                bases
+                  .flatMap((base) => [
+                    files.has(base + ".py") ? base + ".py" : base + ".pyi",
+                    base + "/__init__.py",
+                  ])
+                  .filter((file) => files.has(file)),
+              ),
+            ];
+            return matches.length === 1 ? matches[0] : undefined;
           };
           const names = ast
             .childrenForFieldName("name")
             .filter((node): node is SyntaxNode => !!node);
           for (const name of names) {
             const imported = field(name, "name")?.text ?? name.text;
-            const alias = field(name, "alias")?.text ?? imported.split(".")[0];
+            const alias = field(name, "alias")?.text ?? imported;
             const target = resolvePython(module ? moduleName : imported);
             importEdge(
               info,
@@ -548,8 +552,27 @@ export async function analyzeSyntax(
           const name = field(ast, "name")?.text ?? "";
           importEdge(
             info,
-            findFile(resolveLocal(dir, name), ["rs"]) ??
-              findFile(resolveLocal(dir, name, "mod.rs"), []),
+            ast.parent?.id === info.root.id
+              ? (findFile(
+                  resolveLocal(
+                    /\/(?:main|lib|mod)\.rs$/.test(info.file)
+                      ? dir
+                      : info.file.replace(/\.rs$/, ""),
+                    name,
+                  ),
+                  ["rs"],
+                ) ??
+                  findFile(
+                    resolveLocal(
+                      /\/(?:main|lib|mod)\.rs$/.test(info.file)
+                        ? dir
+                        : info.file.replace(/\.rs$/, ""),
+                      name,
+                      "mod.rs",
+                    ),
+                    [],
+                  ))
+              : undefined,
             ast,
             name,
           );
@@ -563,22 +586,36 @@ export async function analyzeSyntax(
           if (match) {
             const parts = match[2].split("::"),
               name = parts.pop()!;
+            const crateRoots = [
+              ...new Set(
+                [...infos.keys()]
+                  .filter((file) => /\/(?:main|lib)\.rs$/.test(file))
+                  .map((file) => path.posix.dirname(file)),
+              ),
+            ]
+              .filter((base) => info.file.startsWith(base + "/"))
+              .sort((a, b) => b.length - a.length);
+            const moduleBase = /\/(?:main|lib|mod)\.rs$/.test(info.file)
+              ? dir
+              : info.file.replace(/\.rs$/, "");
             const base =
               match[1] === "crate"
-                ? path.posix.dirname(
-                    [...infos.keys()].find(
-                      (f) =>
-                        /\/(?:main|lib)\.rs$/.test(f) &&
-                        f.startsWith(root + "/"),
-                    ) ?? info.file,
-                  )
-                : match[1] === "super"
-                  ? path.posix.dirname(dir)
-                  : dir;
-            const module = resolveLocal(base, ...parts);
-            target =
-              findFile(module, ["rs"]) ??
-              findFile(path.posix.join(module, "mod.rs"), []);
+                ? crateRoots[0]
+                : match[1] === "self"
+                  ? moduleBase
+                  : match[1] === "super"
+                    ? path.posix.dirname(moduleBase)
+                    : undefined;
+            if (
+              base &&
+              ast.parent?.id === info.root.id &&
+              !/\/bin\/[^/]+\.rs$/.test(info.file)
+            ) {
+              const module = resolveLocal(base, ...parts);
+              target =
+                findFile(module, ["rs"]) ??
+                findFile(path.posix.join(module, "mod.rs"), []);
+            }
             if (target && ast.parent?.id === info.root.id)
               info.imports.set(match[3] ?? name, { file: target, name });
           }
@@ -758,10 +795,12 @@ export async function analyzeSyntax(
         } else if (info.language === "python" && token.type === "attribute") {
           const receiver = field(token, "object")?.text,
             attribute = field(token, "attribute")?.text;
+          const receiverRoot = receiver?.split(".")[0];
           const imported =
             receiver &&
-            !owner?.bindings.has(receiver) &&
-            !info.bindings.has(receiver)
+            receiverRoot &&
+            !owner?.bindings.has(receiverRoot) &&
+            !info.bindings.has(receiverRoot)
               ? info.imports.get(receiver)
               : undefined;
           if (imported && !imported.name)

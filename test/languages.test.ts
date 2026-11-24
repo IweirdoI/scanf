@@ -129,6 +129,36 @@ test("reassigned module symbols, bare Python methods and uncalled closures do no
   assert.deepEqual(calls(map, "main"), []);
 });
 
+test("Rust workspace imports stay inside the nearest source root and Python module ambiguity remains unresolved", async () => {
+  const map = await analyze({
+    "a/src/main.rs": "use crate::helper::work; fn start_a(){work();}",
+    "a/src/helper.rs": "pub fn work(){}",
+    "b/src/main.rs": "use crate::helper::work; fn start_b(){work();}",
+    "b/src/helper.rs": "pub fn work(){}",
+    "pkg/tool.py": "def work():\n    return 1\n",
+    "tool.py": "def work():\n    return 2\n",
+    "pkg/start.py":
+      "from tool import work\ndef ambiguous():\n    return work()\n",
+    "pkg/direct.py":
+      "import pkg.tool\ndef direct():\n    return pkg.tool.work()\ndef shadow(pkg):\n    return pkg.tool.work()\n",
+  });
+  for (const label of ["start_a", "start_b"]) {
+    const caller = map.nodes.find((node) => node.name === label)!;
+    const edge = map.edges.find(
+      (edge) => edge.kind === "call" && edge.source === caller.id,
+    )!;
+    assert.ok(edge);
+    assert.ok(
+      map.nodes
+        .find((node) => node.id === edge.target)!
+        .file.startsWith(caller.file.slice(0, -"main.rs".length)),
+    );
+  }
+  assert.deepEqual(calls(map, "ambiguous"), []);
+  assert.deepEqual(calls(map, "direct"), ["work"]);
+  assert.deepEqual(calls(map, "shadow"), []);
+});
+
 test("mixed project reading session exposes full Python source, parameter use ranges, and script guard", async () => {
   const reader = new ProjectReader(path.resolve("examples"));
   const snapshot = await reader.refresh();
