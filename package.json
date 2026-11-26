@@ -2,7 +2,7 @@
   "name": "scanf-code-reader",
   "displayName": "Scanf · 代码阅读地图",
   "description": "用双树、完整源码和参数证据阅读 TS/JS、Python、C/C++、Java、Rust、Go 混合项目。",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "publisher": "scanf-local",
   "license": "MIT",
   "engines": {
@@ -14,25 +14,77 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onCommand:scanf.open"
+    "onCommand:scanf.open",
+    "onView:scanf.logic",
+    "onView:scanf.details"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "scanf.open",
-        "title": "Scanf: 打开代码阅读地图"
+        "title": "Scanf: 打开逻辑导航",
+        "icon": "$(list-tree)",
+        "command": "scanf.open"
       },
       {
-        "command": "scanf.refresh",
-        "title": "Scanf: 刷新代码地图"
+        "title": "Scanf: 刷新逻辑导航",
+        "icon": "$(refresh)",
+        "command": "scanf.refresh"
+      },
+      {
+        "title": "Scanf: 解释当前函数",
+        "icon": "$(sparkle)",
+        "command": "scanf.explain"
+      },
+      {
+        "title": "Scanf: 配置模型 API",
+        "icon": "$(key)",
+        "command": "scanf.modelSettings"
+      },
+      {
+        "title": "Scanf: 扩展设置",
+        "icon": "$(gear)",
+        "command": "scanf.settings"
+      },
+      {
+        "title": "Scanf: 固定 / 跟随当前函数",
+        "toggled": "scanf.pinned",
+        "icon": "$(pin)",
+        "command": "scanf.pin"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "scanf.open",
           "when": "editorLangId =~ /^(typescript|typescriptreact|javascript|javascriptreact|python|c|cpp|java|rust|go)$/",
-          "group": "navigation"
+          "group": "navigation",
+          "command": "scanf.explain"
+        },
+        {
+          "when": "resourceScheme == file",
+          "group": "navigation",
+          "command": "scanf.open"
+        }
+      ],
+      "view/title": [
+        {
+          "when": "view == scanf.logic",
+          "group": "navigation",
+          "command": "scanf.refresh"
+        },
+        {
+          "when": "view == scanf.logic",
+          "group": "navigation",
+          "command": "scanf.pin"
+        },
+        {
+          "when": "view == scanf.details",
+          "group": "navigation",
+          "command": "scanf.modelSettings"
+        },
+        {
+          "when": "view == scanf.logic",
+          "group": "navigation",
+          "command": "scanf.settings"
         }
       ]
     },
@@ -46,9 +98,43 @@
           "minimum": 1,
           "maximum": 500,
           "description": "每个工作区文件夹最多分析的源码文件数。大项目建议单独打开功能模块目录。"
+        },
+        "scanf.codeLens": {
+          "description": "在原生编辑器函数上方显示 Scanf 解读入口。",
+          "type": "boolean",
+          "default": true,
+          "scope": "resource"
         }
       }
-    }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "title": "Scanf",
+          "id": "scanf",
+          "icon": "media/scanf.svg"
+        }
+      ]
+    },
+    "views": {
+      "scanf": [
+        {
+          "name": "逻辑导航",
+          "id": "scanf.logic"
+        },
+        {
+          "name": "函数解读",
+          "id": "scanf.details",
+          "type": "webview"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "scanf.logic",
+        "contents": "打开项目源码，用逻辑树辅助阅读。\n[开始分析项目](command:scanf.open)\n源码、搜索和文件标签使用 VS Code 原生编辑器。"
+      }
+    ]
   },
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -60,7 +146,8 @@
     "package:agent": "npm run build && node scripts/package-plugin.mjs",
     "package": "vsce package --allow-missing-repository --no-rewrite-relative-links",
     "vscode:prepublish": "npm run build",
-    "release:packages": "node scripts/release-packages.mjs"
+    "release:packages": "node scripts/release-packages.mjs",
+    "test:native": "node scripts/build.mjs --test && node scripts/test-native.mjs"
   },
   "devDependencies": {
     "@codemirror/lang-cpp": "6.0.3",
@@ -82,6 +169,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.3.0",
     "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^3.1.0",
     "@vscode/tree-sitter-wasm": "0.3.1",
     "@vscode/vsce": "^3.0.0",
     "codemirror": "^6.0.2",

@@ -65,11 +65,11 @@ args = ["D:/projects/scanf/dist/mcp.js", "--root", "D:/projects/scanf/examples"]
 
 ## VS Code 深入阅读
 
-从 VSIX 安装 `scanf-code-reader-0.7.1.vsix`，打开多语言项目，执行 `Scanf: 打开代码阅读地图`。切换文件结构 / 逻辑入口，阅读源码 / 步骤，点击“在编辑器打开”或步骤定位。当前符号调用 / 导入依赖仍可在详情中展开。光标移动会更新阅读位置；“固定”停止跟随选区。编辑刷新仍更新版本。
+VS Code 使用独立的原生适配：`src/native-navigation.ts` 提供 TreeView，`src/native-details.ts` 提供只有文字与证据链接的 WebviewView；`src/extension.ts` 负责工作区、原生编辑器定位、CodeLens、HoverProvider 和凭据。无需载入通用工作台的 CodeMirror、文件树或自制标签。打开项目后执行 `Scanf: 打开逻辑导航`，也可打开活动栏 Scanf 视图。光标移动更新当前函数；图钉固定；点击树或证据行号直接定位原生源码。多工作区随当前源码文件切换根目录。
 
-VS Code 尚未接入 Agent 专有聊天 API，追问先生成可复制草稿。它会索引未保存文档；MCP / DSH 本机服务目前只读磁盘，不能把两者视为同一版本。
+函数上方的 CodeLens 与右键命令触发当前函数解读，结果仅显示在侧栏；模型设置使用原生输入框 / 选项列表，Key 存在 SecretStorage。无需 Key 的基础参数悬停与可选自动 AI 悬停分开。VS Code 尚未接入 Agent 专有聊天 API。它会索引未保存文档；MCP / DSH 本机服务目前只读磁盘，不能把两者视为同一版本。
 
-**已验证**：浏览器测试覆盖真实本机后端、树结构、选区消息、固定、源码位置请求、转义、窄窗口；VS Code 宿主冒烟覆盖激活和后台阅读快照。冒烟不等同于完整原生 UI 端到端验收。
+**验证方式**：`npm run test:native` 使用独立的 VS Code 1.90.0 宿主，检查原生源码跳转、CodeLens、跟随 / 固定、基础与模拟 API 悬停、混合语言和多工作区；测试必须生成当次报告，不能把旧报告当作新结果。浏览器测试继续覆盖 DSH / MCP 通用界面。原生侧栏已在本机 VS Code 窗口确认显示，并实际点击调用节点跳转、使用 Alt+← 返回。AI 链路的模拟 API 结果只证明接线。
 
 ## DSH 原生适配
 

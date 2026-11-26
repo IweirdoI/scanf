@@ -25,6 +25,11 @@ dist/reader.html
 *.vsix
 
 media/model-settings.js
+dist/reader.js
+dist/webview.js
+media/reader.css
+media/style.css
+media/scanf-reading-options.html
 
 .github/**
 CONTRIBUTING.md

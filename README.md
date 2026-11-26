@@ -9,9 +9,9 @@
 
 ![Scanf 完整源码、双树与参数对照](docs/images/workspace.png)
 
-- **两种树**：按文件目录找源码，或从逻辑入口沿调用关系阅读。
-- **两种窗口**：小窗口看代码段，大工作台对照完整源码与用途、参数。
-- **编辑器式导航**：定义跳转、文件标签及关闭、前进 / 返回、全文搜索、行号定位。
+- **VS Code 原生阅读**：源码、文件树、标签、搜索与跳转沿用编辑器；Scanf 只补充逻辑导航和函数解释。
+- **逻辑树**：从入口沿调用关系阅读，查看当前函数调用了谁、被谁调用，点击直接定位原生源码。
+- **DSH / MCP 阅读窗口**：小窗口看树和片段，大工作台对照完整源码与参数。
 - **可选 AI 解读**：填写自己的 OpenAI 兼容 API，悬停查看解释，或解读整个函数。
 - **源码证据**：参数类型、注释、实际使用位置；动态关系和未知用途明确标注。
 - **混合语言项目**：TS / JS、Python、C / C++、Java、Rust、Go 共用文件树、入口树和源码导航；解析器随包安装，不需要各语言工具链。[支持范围](docs/LANGUAGES.md)
@@ -21,24 +21,24 @@
 
 ### VS Code / Cursor
 
-1. [下载最新 VSIX](https://github.com/IweirdoI/scanf/releases/latest/download/scanf-code-reader-0.7.1.vsix)。
+1. [下载最新 VSIX](https://github.com/IweirdoI/scanf/releases/latest/download/scanf-code-reader-0.8.0.vsix)。
 2. 编辑器扩展页 → `…` → **Install from VSIX / 从 VSIX 安装**，选择下载文件。
-3. 打开项目（可以包含多种语言），命令面板运行 **Scanf: 打开代码阅读地图**。
+3. 打开自己的项目（可以包含多种语言），命令面板运行 **Scanf: 打开逻辑导航**，或点击活动栏的 **Scanf** 图标。
 
 也可以在下载目录执行：
 
 ```sh
-code --install-extension scanf-code-reader-0.7.1.vsix
+code --install-extension scanf-code-reader-0.8.0.vsix
 ```
 
 扩展已打包依赖，无需单独安装 Node.js。当前通过 GitHub Releases 分发，**尚未上架 VS Code Marketplace / Open VSX**。
 
 ### DeepSeek Harness
 
-在 DSH 插件页选择本地安装，选取 [DSH 插件包](https://github.com/IweirdoI/scanf/releases/latest/download/dsh-scanf-reader-0.7.1.tgz)。或下载后执行：
+在 DSH 插件页选择本地安装，选取 [DSH 插件包](https://github.com/IweirdoI/scanf/releases/latest/download/dsh-scanf-reader-0.8.0.tgz)。或下载后执行：
 
 ```sh
-dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.1.tgz
+dsh plugin --profile desktop add ./dsh-scanf-reader-0.8.0.tgz
 ```
 
 重新启动 DSH，在项目会话右侧栏的新标签页中选择 **Scanf 代码阅读**。它自动读取当前会话目录；需要换目录时点“切换项目”。已实测 DSH Desktop **0.2.2-rc.5**，其他版本尚待验证。详见 [安装排错](docs/INSTALL.md#dsh)。
@@ -48,7 +48,7 @@ dsh plugin --profile desktop add ./dsh-scanf-reader-0.7.1.tgz
 需要 **Node.js 22+**，不需要下载源码或运行 build：
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.1/scanf-reader-0.7.1.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.8.0/scanf-reader-0.8.0.tgz
 scanf-reader setup --root "/absolute/path/to/your-project"
 ```
 
@@ -64,11 +64,19 @@ codex mcp add scanf -- scanf-reader mcp --root "/absolute/path/to/your-project"
 
 ## 开始阅读
 
+### VS Code / Cursor
+
+源码始终在原生编辑器中。打开 Scanf 活动栏后，逻辑导航跟随光标所在函数；点击调用 / 调用者节点直接跳到源码。图钉按钮固定当前阅读位置，再次点击恢复跟随。多工作区会根据当前文件切换项目根目录。
+
+函数上方的 **Scanf: 解读函数** 或编辑器右键 **解释当前函数** 将解读显示在侧栏。参数说明和证据行号也在侧栏，点击回到原生编辑器；悬停参数可查看源码说明，无需 Key。模型 API 通过命令 **Scanf: 配置模型 API** 的原生输入框设置，Key 使用密码输入与凭据存储。**Scanf: 扩展设置** 可调整索引上限和函数解读按钮显示。
+
+### DSH / MCP 通用工作台
+
 打开文件或函数 → 按需切到“逻辑入口” → 点调用节点或 `F12 / Ctrl+单击` 跳到定义 → 用 `Alt+←` 返回。
 
 `Ctrl / Cmd+K` 搜索文件与符号，`Ctrl / Cmd+G` 跳到行。标签右侧 **×** 或鼠标中键关闭文件。明暗主题可切换，大窗导航栏可拖动调宽。
 
-右上角 **星光按钮** 打开模型设置：填写 API 地址、模型名、Key → **测试连接**。勾选自动悬停后，在源码词语上停留即可显示解释。也可关掉自动调用，改为点击浮层中的解释按钮。
+DSH 工作台右上角 **星光按钮** 打开模型设置：填写 API 地址、模型名、Key → **测试连接**。勾选自动悬停后，在源码词语上停留即可显示解释。也可关掉自动调用，改为点击浮层中的解释按钮。
 
 ![模型设置](docs/images/model-settings.png)
 

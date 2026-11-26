@@ -1,21 +1,15 @@
-Scanf 0.7.1：一份项目快照阅读 TS / JS、Python、C / C++、Java、Rust、Go 混合项目。
+Scanf 0.8.0：VS Code 原生阅读。
 
-0.7.1 修复 Rust 多 crate 的导入范围，以及 Python 多级模块导入 / 歧义处理；建议安装此补丁版本。
+- 源码、文件树、标签、搜索、分屏和定义跳转直接使用 VS Code。
+- Scanf 提供原生逻辑树：项目入口、当前函数的调用 / 调用者；点击节点直接跳到源码。光标跟随与图钉固定均可用。
+- 函数上方 CodeLens 和编辑器右键提供解读入口；侧栏只显示用途、参数证据与可选 AI 回答。
+- 参数基础悬停无需 API Key。自选模型使用原生配置输入框与 SecretStorage，支持手动 / 自动悬停模式。
+- 可用于其他项目及多工作区；保留混合语言分析，拒绝未保存源码对应的过期跳转。
+- DSH / MCP 继续提供原有小窗口和完整阅读工作台。
 
-- 多语言共享文件树、逻辑入口树、完整源码编辑器、搜索与定义跳转。
-- 新语言共享 Tree-sitter 提取器与按需加载的离线 WASM；保留 TS / JS 编译器语义解析，无需各语言工具链。
-- 参数类型、默认值、注释与用法证据；VS Code 菜单、原生悬停与 DSH 阅读面板覆盖新增语言。
-- 测试覆盖作用域、Python 导入别名、Go 同包跨文件、简单 Rust use 和 C include；动态分派、构建条件与跨语言桥接保留未解析。
-- Windows / Linux CI 与手动 Release 工作流已启用。
+VS Code 安装：下载 scanf-code-reader-0.8.0.vsix → Install from VSIX → Reload Window → 打开自己的项目 → 点击活动栏 Scanf，或运行 Scanf: 打开逻辑导航。
 
-安装包（无需编译）：
+DSH：安装 dsh-scanf-reader-0.8.0.tgz 并重启。
+MCP（Node.js 22+）：npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.8.0/scanf-reader-0.8.0.tgz。
 
-- VS Code / Cursor：下载 `scanf-code-reader-0.7.1.vsix`，通过 Install from VSIX 安装。
-- DSH Desktop 0.2.2-rc.5：下载 `dsh-scanf-reader-0.7.1.tgz`，使用本地插件安装，重启后打开右侧 Scanf 标签。
-- MCP（Node.js 22+）：`npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.7.1/scanf-reader-0.7.1.tgz`，然后 `scanf-reader setup --root "/your/project"`。
-
-安装与排错：https://github.com/IweirdoI/scanf/blob/master/docs/INSTALL.md
-
-默认所有语言共享 150 文件 / 单文件 256 KiB / 总计 8 MiB 预算。混合语言索引不等于跨语言调用链已解析。源码分析不执行项目；可选模型调用需自己配置 API，模拟接口测试不代表真实模型质量。Codex 原生 diff 自动同步、DSH 独立文件预览悬停尚未实现。未上架 npm registry / Marketplace / Open VSX。
-
-SHA256SUMS.txt 可校验每个安装包。源码采用 MIT，随安装包保留第三方许可证。
+支持 TS / JS、Python、C / C++、Java、Rust、Go。默认共享 150 文件 / 单文件 256 KiB / 总计 8 MiB 预算。静态分析不执行项目；动态分派、构建条件与跨语言桥接保留未解析。模拟 API 验证只证明接线，不证明真实模型质量。Codex 原生 diff 同步尚未实现；未上架扩展市场。

@@ -1,7 +1,7 @@
 # 发布流程
 
 1. 同步根 package.json、DSH package.json、Codex plugin.json、package-lock 根版本和 MCP / UI 版本；更新 CHANGELOG、README 安装链接与 RELEASE_NOTES。
-2. `npm ci` → `npm run check` → `npm run build` → `npm test` → `npm run test:ui`。
+2. `npm ci` → `npm run check` → `npm run build` → `npm test` → `npm run test:ui`。Windows 还运行 `npm run test:native`，验证真实 VS Code 宿主；首次会下载隔离测试用 VS Code，不修改日常安装。
 3. `npm run package` 构建 VSIX；`npm run release:packages` 生成 DSH / MCP tgz 与 SHA256SUMS。
 4. `node scripts/verify-release.mjs` 从预构建包检验 CLI / MCP。不把本机绝对路径写入分发包。
 5. 当前手工发布：`gh release create v<版本> output/release/* --target master --title "Scanf <版本>" --notes-file docs/RELEASE_NOTES.md`。发布前完成上面的检查。

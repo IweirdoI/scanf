@@ -1,6 +1,6 @@
 {
   "name": "dsh-scanf-reader",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "type": "module",
   "license": "MIT",
   "description": "在 DSH 原生右侧面板中阅读 Scanf 文件结构和逻辑入口树。",
