@@ -11,7 +11,7 @@ Explore mixed TypeScript / JavaScript, Python, C / C++, Java, Rust and Go projec
 - **MCP agents:** Node.js 22+; prebuilt package, no compilation:
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.8.0/scanf-reader-0.8.0.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.9.0/scanf-reader-0.9.0.tgz
 scanf-reader setup --root "/absolute/path/to/project"
 ```
 
@@ -19,7 +19,7 @@ Copy the printed MCP configuration to your client. CLI: `scanf-reader --help`. C
 
 ## Features and limits
 
-VS Code uses its native editor, file explorer, tabs, search and navigation. Scanf adds a native logic tree, cursor-follow / pin, function CodeLens, parameter hover and a prose-only explanation sidebar. Open **Scanf: 打开逻辑导航** in any supported workspace. Configure your API with **Scanf: 配置模型 API** using native inputs and SecretStorage.
+VS Code uses its native editor, file explorer, tabs, search and navigation. Scanf adds a branching node-and-edge graph in the built-in Explorer, cursor-follow / pin, function CodeLens, parameter hover and a prose-only explanation sidebar. Open **Scanf: 打开逻辑导航** in any supported workspace. Configure your API with **Scanf: 配置模型 API** using native inputs and SecretStorage.
 
 DSH / MCP retain the shared reading workspace: file / entry-point trees, full read-only CodeMirror editor, definition jumps and parameter evidence. Optional OpenAI-compatible model settings and hover explanations are available in the DSH reader; DSH's separate native file preview is not extended.
 

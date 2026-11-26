@@ -65,7 +65,7 @@ args = ["D:/projects/scanf/dist/mcp.js", "--root", "D:/projects/scanf/examples"]
 
 ## VS Code 深入阅读
 
-VS Code 使用独立的原生适配：`src/native-navigation.ts` 提供 TreeView，`src/native-details.ts` 提供只有文字与证据链接的 WebviewView；`src/extension.ts` 负责工作区、原生编辑器定位、CodeLens、HoverProvider 和凭据。无需载入通用工作台的 CodeMirror、文件树或自制标签。打开项目后执行 `Scanf: 打开逻辑导航`，也可打开活动栏 Scanf 视图。光标移动更新当前函数；图钉固定；点击树或证据行号直接定位原生源码。多工作区随当前源码文件切换根目录。
+VS Code 使用独立适配：在原生 Explorer 下注册关系图和函数说明两个视图，原有项目文件夹与文件浏览完整保留。`src/logic-graph.ts` 从共享 CodeMap 投影有分叉连线的有界树图，`src/native-graph.ts` 管理侧栏及按需大图；`src/native-details.ts` 提供文字与证据链接。`src/extension.ts` 负责原生源码定位、CodeLens、HoverProvider 和凭据。不载入通用工作台的 CodeMirror、文件树或自制标签。调用、包含、调用方使用不同线型和箭头；所属关系来自 AST parentId，而非调用边。最多 60 个展开节点，调用方另限 6 个；递归、共享与截断有标记。入口选择、1–3 层、适宽及 100% 支持窄侧栏阅读，按需大图只展示关系。多工作区随当前源码文件切换。
 
 函数上方的 CodeLens 与右键命令触发当前函数解读，结果仅显示在侧栏；模型设置使用原生输入框 / 选项列表，Key 存在 SecretStorage。无需 Key 的基础参数悬停与可选自动 AI 悬停分开。VS Code 尚未接入 Agent 专有聊天 API。它会索引未保存文档；MCP / DSH 本机服务目前只读磁盘，不能把两者视为同一版本。
 

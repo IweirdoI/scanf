@@ -2,9 +2,9 @@
 
 ## VS Code / Cursor
 
-从 [Releases](https://github.com/IweirdoI/scanf/releases/latest) 下载 `.vsix`，通过扩展面板的 **Install from VSIX** 安装。打开自己的项目后执行 `Scanf: 打开逻辑导航` 或点击活动栏 Scanf 图标。无需把 Scanf 源码放入目标项目。
+从 [Releases](https://github.com/IweirdoI/scanf/releases/latest) 下载 `.vsix`，通过扩展面板的 **Install from VSIX** 安装。打开自己的项目后执行 `Scanf: 打开逻辑导航` 或在原生资源管理器中打开 Scanf 逻辑关系图。无需把 Scanf 源码放入目标项目。
 
-源码使用 VS Code 原生编辑器，文件管理使用资源管理器。Scanf 侧栏只有逻辑树和函数解读；点击树节点、参数证据会定位原生源码，不打开另一套代码编辑器。树默认跟随光标，图钉可固定。多工作区根据当前文件选择项目。视图可使用 VS Code 原生拖动 / Move View 功能移到右侧。
+源码使用 VS Code 原生编辑器，文件管理使用资源管理器。原生资源管理器保留项目文件夹树，其下的 Scanf 视图显示分叉关系图和函数解读；点击树节点、参数证据会定位原生源码，不打开另一套代码编辑器。树默认跟随光标，图钉可固定。多工作区根据当前文件选择项目。视图可使用 VS Code 原生拖动 / Move View 功能移到右侧。
 
 函数上方的 `Scanf: 解读函数`、编辑器右键 `Scanf: 解释当前函数` 或命令面板均可触发。基础悬停展示源码注释与参数证据；自动 AI 悬停需显式配置模型并启用。原生扩展设置可控制 `scanf.codeLens` 与 `scanf.maxFiles`。
 
@@ -12,7 +12,7 @@
 
 ## DSH
 
-已验证 DSH Desktop 0.2.2-rc.5。下载 `dsh-scanf-reader-0.8.0.tgz`，在插件页选择本地包安装，或运行 `dsh plugin --profile desktop add ./dsh-scanf-reader-0.8.0.tgz`。重启后右侧栏新标签页选择 Scanf。
+已验证 DSH Desktop 0.2.2-rc.5。下载 `dsh-scanf-reader-0.9.0.tgz`，在插件页选择本地包安装，或运行 `dsh plugin --profile desktop add ./dsh-scanf-reader-0.9.0.tgz`。重启后右侧栏新标签页选择 Scanf。
 
 如果插件安装成功但没有入口：检查 desktop profile 的 `package.json` 中 `dsh.profile.bundles` 是否包含 `dsh-scanf-reader`；只追加此项，保留原有 bundles。然后重启。使用 CLI 的 `dsh plugin --help` 查看所安装版本的命令。新版本接口可能有差异，请在 Issue 中提供版本号和错误。
 
@@ -23,7 +23,7 @@
 Node.js 22+，一次安装：
 
 ```sh
-npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.8.0/scanf-reader-0.8.0.tgz
+npm install -g https://github.com/IweirdoI/scanf/releases/download/v0.9.0/scanf-reader-0.9.0.tgz
 scanf-reader --version
 scanf-reader setup --root "/absolute/project/path"
 ```
@@ -36,7 +36,7 @@ Windows 路径示例：`scanf-reader setup --root "D:/projects/my-app"`。该命
 codex mcp add scanf -- scanf-reader mcp --root "/absolute/project/path"
 ```
 
-无全局安装体验：`npx -y --package=https://github.com/IweirdoI/scanf/releases/download/v0.8.0/scanf-reader-0.8.0.tgz scanf-reader --help`。
+无全局安装体验：`npx -y --package=https://github.com/IweirdoI/scanf/releases/download/v0.9.0/scanf-reader-0.9.0.tgz scanf-reader --help`。
 
 `scanf-reader mcp` 的 stdout 专用于 MCP，不要把普通终端输出写入该通道。项目根目录必须显式传入。MCP 工具为 `scanf_project`、`scanf_find_symbol`、`scanf_inspect`、`scanf_publish_explanation`、`scanf_open_reader`。
 

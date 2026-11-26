@@ -2,7 +2,7 @@
   "name": "scanf-code-reader",
   "displayName": "Scanf · 代码阅读地图",
   "description": "用双树、完整源码和参数证据阅读 TS/JS、Python、C/C++、Java、Rust、Go 混合项目。",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "publisher": "scanf-local",
   "license": "MIT",
   "engines": {
@@ -50,6 +50,11 @@
         "toggled": "scanf.pinned",
         "icon": "$(pin)",
         "command": "scanf.pin"
+      },
+      {
+        "icon": "$(open-preview)",
+        "command": "scanf.openGraph",
+        "title": "Scanf: 展开逻辑关系图"
       }
     ],
     "menus": {
@@ -85,6 +90,11 @@
           "when": "view == scanf.logic",
           "group": "navigation",
           "command": "scanf.settings"
+        },
+        {
+          "group": "navigation",
+          "command": "scanf.openGraph",
+          "when": "view == scanf.logic"
         }
       ]
     },
@@ -107,24 +117,16 @@
         }
       }
     },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "title": "Scanf",
-          "id": "scanf",
-          "icon": "media/scanf.svg"
-        }
-      ]
-    },
     "views": {
-      "scanf": [
+      "explorer": [
         {
-          "name": "逻辑导航",
-          "id": "scanf.logic"
+          "id": "scanf.logic",
+          "name": "Scanf · 逻辑关系图",
+          "type": "webview"
         },
         {
-          "name": "函数解读",
           "id": "scanf.details",
+          "name": "Scanf · 函数解读",
           "type": "webview"
         }
       ]

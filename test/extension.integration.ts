@@ -51,9 +51,17 @@ async function runSuite() {
     doc.uri,
   );
   assert.ok(lenses?.some((lens) => lens.command?.command === "scanf.explain"));
-  const tree = extension.exports.getNativeNavigation();
-  assert.ok(tree.some((node: any) => node.label === "项目逻辑入口"));
-  assert.ok(!tree.some((node: any) => node.label === "文件结构"));
+  const manifest = extension.packageJSON;
+  assert.ok(
+    manifest.contributes.views.explorer.some(
+      (view: any) => view.id === "scanf.logic" && view.type === "webview",
+    ),
+    "graph must share the built-in Explorer with normal project folders",
+  );
+  assert.ok(
+    !manifest.contributes.viewsContainers,
+    "do not replace the native file explorer with a custom activity",
+  );
   const subtotalId = snapshot.calls.children.find(
     (node: any) => node.label === "subtotal",
   ).symbolId;

@@ -6,8 +6,8 @@ import type { CodeMap, CodeNode } from "./model";
 import { readerView } from "./reader-model";
 import { ModelService } from "./model-service";
 import { languageFor, sourceGlob, editorLanguageIds } from "./languages";
-import { LogicNavigation } from "./native-navigation";
 import { NativeDetails } from "./native-details";
+import { NativeGraph } from "./native-graph";
 
 const normalize = (file: string) => path.resolve(file).replace(/\\/g, "/");
 type Target = { id: string; revision: string; line?: number };
@@ -34,11 +34,10 @@ export function activate(context: vscode.ExtensionContext) {
     pinned = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let inflight: Promise<void> | undefined;
-  const navigation = new LogicNavigation();
-  const tree = vscode.window.createTreeView("scanf.logic", {
-    treeDataProvider: navigation,
-    showCollapseAll: true,
-  });
+  const tree = new NativeGraph(
+    (target) => navigate(target),
+    (error) => report(error),
+  );
   const lensesChanged = new vscode.EventEmitter<void>();
   const snapshot = () => {
     if (!map) return undefined;
@@ -53,10 +52,10 @@ export function activate(context: vscode.ExtensionContext) {
   };
   const publish = () => {
     const view = snapshot();
-    navigation.update(view);
     details.update(view);
-    tree.title = pinned ? "逻辑导航 · 已固定" : "逻辑导航";
+    tree.title = pinned ? "逻辑关系图 · 已固定" : "逻辑关系图";
     tree.description = root?.name;
+    tree.update(view, map);
   };
   const selectFromEditor = () => {
     if (pinned || !map) return;
@@ -131,8 +130,8 @@ export function activate(context: vscode.ExtensionContext) {
     map = undefined;
     sources = {};
     sourceRevision = "";
-    navigation.update();
     details.update();
+    tree.update();
     lensesChanged.fire();
     tree.message = `正在分析 ${chosen.name}…`;
     try {
@@ -261,7 +260,8 @@ export function activate(context: vscode.ExtensionContext) {
     timer = setTimeout(() => void refresh(), 650);
   };
   async function open() {
-    await vscode.commands.executeCommand("workbench.view.extension.scanf");
+    await vscode.commands.executeCommand("workbench.view.explorer");
+    await vscode.commands.executeCommand("scanf.logic.focus");
     if (!started || root?.uri.toString() !== chooseRoot()?.uri.toString())
       await refresh();
     else {
@@ -395,13 +395,20 @@ export function activate(context: vscode.ExtensionContext) {
       }
     };
   context.subscriptions.push(
-    navigation,
     tree,
     lensesChanged,
+    vscode.window.registerWebviewViewProvider("scanf.logic", tree),
     vscode.window.registerWebviewViewProvider("scanf.details", details),
     vscode.commands.registerCommand("scanf.open", guarded(open)),
     vscode.commands.registerCommand("scanf.refresh", guarded(refresh)),
     vscode.commands.registerCommand("scanf.navigate", guarded(navigate)),
+    vscode.commands.registerCommand(
+      "scanf.openGraph",
+      guarded(async () => {
+        await open();
+        tree.expand();
+      }),
+    ),
     vscode.commands.registerCommand("scanf.explain", guarded(explain)),
     vscode.commands.registerCommand(
       "scanf.modelSettings",
@@ -580,7 +587,6 @@ export function activate(context: vscode.ExtensionContext) {
   return {
     modelAction,
     getReadingSnapshot: snapshot,
-    getNativeNavigation: () => navigation.roots,
     navigate,
     refresh,
   };
